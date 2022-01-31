@@ -20,6 +20,11 @@ const hobbyData = [
   { id: '3', title: 'Swimming', description: 'Some test description' },
   { id: '4', title: 'Fencing', description: 'Some test description' },
   { id: '5', title: 'Hiking', description: 'Some test description' }
+];
+const postData =  [
+  { id: '1', comment: 'Some test comment' },
+  { id: '2', comment: 'Some test comment' },
+  { id: '3', comment: 'Some test comment' },
 ]
 
 // specify each entity
@@ -58,6 +63,19 @@ const HobbyType = new GraphQLObjectType({
   }
 });
 
+const PostType = new GraphQLObjectType({
+  name: 'Post',
+  description: 'Documentation for posts...',
+  fields: {
+    id: {
+      type: GraphQLID
+    },
+    comment: {
+      type: GraphQLString
+    }
+  }
+});
+
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   description: '',
@@ -87,6 +105,17 @@ const RootQuery = new GraphQLObjectType({
       },
       resolve(parent, args) {
         return hobbyData.find((hobby) => hobby.id === args.id);
+      }
+    },
+    post: {
+      type: PostType,
+      args: {
+        id: {
+          type: GraphQLID
+        },
+      },
+      resolve(parent, args) {
+        return postData.find((post) => post.id === args.id);
       }
     }
   }
