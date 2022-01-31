@@ -4,6 +4,7 @@ import {
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
+  GraphQLList,
 } from 'graphql';
 
 // dummy data
@@ -27,13 +28,17 @@ const postData =  [
   { id: '3', comment: 'Some test comment', userId: '2' },
   { id: '4', comment: 'Some test comment', userId: '3' },
   { id: '5', comment: 'Some test comment', userId: '4' },
-]
+];
 
 // specify each entity
 const UserType = new GraphQLObjectType({
   name: 'User',
   description: 'Documentation for user...',
-  fields: {
+
+  // add this as a callback function
+  // so that access of other types within this type
+  // won't throw errors such as used before defined
+  fields: () => ({
     id: {
       type: GraphQLID,
     },
@@ -45,14 +50,26 @@ const UserType = new GraphQLObjectType({
     },
     profession: {
       type: GraphQLString,
+    },
+    posts: {
+      type: new GraphQLList(PostType),
+      resolve(parent, args) {
+        return postData.filter((post) => post.userId === parent.id);
+      }
+    },
+    hobbies: {
+      type: new GraphQLList(HobbyType),
+      resolve(parent, args) {
+        return hobbyData.filter((hobby) => hobby.userId === parent.id);
+      }
     }
-  },
+  }),
 });
 
 const HobbyType = new GraphQLObjectType({
   name: 'Hobby',
   description: 'Documentation for hobbies...',
-  fields: {
+  fields: () => ({
     id: {
       type: GraphQLID
     },
@@ -68,13 +85,13 @@ const HobbyType = new GraphQLObjectType({
         return usersData.find((user) => user.id === parent.userId);
       }
     }
-  }
+  })
 });
 
 const PostType = new GraphQLObjectType({
   name: 'Post',
   description: 'Documentation for posts...',
-  fields: {
+  fields: () => ({
     id: {
       type: GraphQLID
     },
@@ -89,7 +106,7 @@ const PostType = new GraphQLObjectType({
         return usersData.find((user) => user.id === parent.userId);
       }
     }
-  }
+  })
 });
 
 const RootQuery = new GraphQLObjectType({
