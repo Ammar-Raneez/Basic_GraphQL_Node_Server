@@ -22,7 +22,7 @@ const hobbyData = [
   { id: '4', title: 'Fencing', description: 'Some test description', userId: '3' },
   { id: '5', title: 'Hiking', description: 'Some test description', userId: '4' }
 ];
-const postData =  [
+const postData = [
   { id: '1', comment: 'Some test comment', userId: '1' },
   { id: '2', comment: 'Some test comment', userId: '1' },
   { id: '3', comment: 'Some test comment', userId: '2' },
@@ -164,7 +164,7 @@ const Mutation = new GraphQLObjectType({
       type: UserType,
       args: {
         // id: {
-          // type: GraphQLID
+        // type: GraphQLID
         // },
         name: {
           type: GraphQLString
@@ -184,6 +184,28 @@ const Mutation = new GraphQLObjectType({
         }
 
         return user;
+      }
+    },
+    createPost: {
+      type: PostType,
+      args: {
+        // id: {
+        //   type: GraphQLID
+        // }
+        comment: {
+          type: GraphQLString
+        },
+        userId: {
+          type: GraphQLID
+        }
+      },
+      resolve(parent, args) {
+        const post = {
+          comment: args.comment,
+          userId: args.userId
+        }
+
+        return post;
       }
     }
   }
