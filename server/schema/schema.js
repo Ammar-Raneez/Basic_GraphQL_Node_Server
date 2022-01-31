@@ -13,6 +13,13 @@ const usersData = [
   { id: '3', name: 'Bella', age: 16, profession: 'Programmer' },
   { id: '4', name: 'Gina', age: 26, profession: 'Mechanic' },
   { id: '5', name: 'Georgina', age: 36, profession: 'Painter' }
+];
+const hobbyData = [
+  { id: '1', title: 'Programming', description: 'Some test description' },
+  { id: '2', title: 'Rowing', description: 'Some test description' },
+  { id: '3', title: 'Swimming', description: 'Some test description' },
+  { id: '4', title: 'Fencing', description: 'Some test description' },
+  { id: '5', title: 'Hiking', description: 'Some test description' }
 ]
 
 // specify each entity
@@ -35,6 +42,22 @@ const UserType = new GraphQLObjectType({
   },
 });
 
+const HobbyType = new GraphQLObjectType({
+  name: 'Hobby',
+  description: 'Documentation for hobbies...',
+  fields: {
+    id: {
+      type: GraphQLID
+    },
+    title: {
+      type: GraphQLString
+    },
+    description: {
+      type: GraphQLString
+    }
+  }
+});
+
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   description: '',
@@ -46,13 +69,24 @@ const RootQuery = new GraphQLObjectType({
       // search with id arg
       args: {
         id: {
-          type: GraphQLString,
+          type: GraphQLID,
         }
       },
 
       // data return
       resolve(parent, args) {
         return usersData.find((user) => user.id === args.id);
+      }
+    },
+    hobby: {
+      type: HobbyType,
+      args: {
+        id: {
+          type: GraphQLID
+        }
+      },
+      resolve(parent, args) {
+        return hobbyData.find((hobby) => hobby.id === args.id);
       }
     }
   }
