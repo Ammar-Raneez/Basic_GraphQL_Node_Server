@@ -6,29 +6,32 @@ import {
   GraphQLString,
   GraphQLList,
 } from 'graphql';
+import Hobby from '../../model/Hobby.js';
+import Post from '../../model/Post.js';
+import User from '../../model/user.js';
 
 // dummy data
-const usersData = [
-  { id: '1', name: 'Bond', age: 36, profession: 'Doctor' },
-  { id: '2', name: 'Anna', age: 26, profession: 'Teacher' },
-  { id: '3', name: 'Bella', age: 16, profession: 'Programmer' },
-  { id: '4', name: 'Gina', age: 26, profession: 'Mechanic' },
-  { id: '5', name: 'Georgina', age: 36, profession: 'Painter' }
-];
-const hobbyData = [
-  { id: '1', title: 'Programming', description: 'Some test description', userId: '1' },
-  { id: '2', title: 'Rowing', description: 'Some test description', userId: '1' },
-  { id: '3', title: 'Swimming', description: 'Some test description', userId: '2' },
-  { id: '4', title: 'Fencing', description: 'Some test description', userId: '3' },
-  { id: '5', title: 'Hiking', description: 'Some test description', userId: '4' }
-];
-const postData = [
-  { id: '1', comment: 'Some test comment', userId: '1' },
-  { id: '2', comment: 'Some test comment', userId: '1' },
-  { id: '3', comment: 'Some test comment', userId: '2' },
-  { id: '4', comment: 'Some test comment', userId: '3' },
-  { id: '5', comment: 'Some test comment', userId: '4' },
-];
+// const usersData = [
+//   { id: '1', name: 'Bond', age: 36, profession: 'Doctor' },
+//   { id: '2', name: 'Anna', age: 26, profession: 'Teacher' },
+//   { id: '3', name: 'Bella', age: 16, profession: 'Programmer' },
+//   { id: '4', name: 'Gina', age: 26, profession: 'Mechanic' },
+//   { id: '5', name: 'Georgina', age: 36, profession: 'Painter' }
+// ];
+// const hobbyData = [
+//   { id: '1', title: 'Programming', description: 'Some test description', userId: '1' },
+//   { id: '2', title: 'Rowing', description: 'Some test description', userId: '1' },
+//   { id: '3', title: 'Swimming', description: 'Some test description', userId: '2' },
+//   { id: '4', title: 'Fencing', description: 'Some test description', userId: '3' },
+//   { id: '5', title: 'Hiking', description: 'Some test description', userId: '4' }
+// ];
+// const postData = [
+//   { id: '1', comment: 'Some test comment', userId: '1' },
+//   { id: '2', comment: 'Some test comment', userId: '1' },
+//   { id: '3', comment: 'Some test comment', userId: '2' },
+//   { id: '4', comment: 'Some test comment', userId: '3' },
+//   { id: '5', comment: 'Some test comment', userId: '4' },
+// ];
 
 // specify each entity
 const UserType = new GraphQLObjectType({
@@ -54,13 +57,11 @@ const UserType = new GraphQLObjectType({
     posts: {
       type: new GraphQLList(PostType),
       resolve(parent, args) {
-        return postData.filter((post) => post.userId === parent.id);
       }
     },
     hobbies: {
       type: new GraphQLList(HobbyType),
       resolve(parent, args) {
-        return hobbyData.filter((hobby) => hobby.userId === parent.id);
       }
     }
   }),
@@ -82,7 +83,6 @@ const HobbyType = new GraphQLObjectType({
     user: {
       type: UserType,
       resolve(parent, args) {
-        return usersData.find((user) => user.id === parent.userId);
       }
     }
   })
@@ -102,8 +102,6 @@ const PostType = new GraphQLObjectType({
     user: {
       type: UserType,
       resolve(parent, args) {
-        // in this case parent is post and child is user
-        return usersData.find((user) => user.id === parent.userId);
       }
     }
   })
@@ -126,13 +124,11 @@ const RootQuery = new GraphQLObjectType({
 
       // data return
       resolve(parent, args) {
-        return usersData.find((user) => user.id === args.id);
       }
     },
     users: {
       type: new GraphQLList(UserType),
       resolve(parent, args) {
-        return usersData;
       }
     },
     hobby: {
@@ -143,13 +139,11 @@ const RootQuery = new GraphQLObjectType({
         }
       },
       resolve(parent, args) {
-        return hobbyData.find((hobby) => hobby.id === args.id);
       }
     },
     hobbies: {
       type: new GraphQLList(HobbyType),
       resolve(parent, args) {
-        return hobbyData;
       }
     },
     post: {
@@ -160,13 +154,11 @@ const RootQuery = new GraphQLObjectType({
         },
       },
       resolve(parent, args) {
-        return postData.find((post) => post.id === args.id);
       }
     },
     posts: {
       type: new GraphQLList(PostType),
       resolve(parent, args) {
-        return posts;
       }
     }
   }
@@ -181,9 +173,6 @@ const Mutation = new GraphQLObjectType({
     createUser: {
       type: UserType,
       args: {
-        // id: {
-        // type: GraphQLID
-        // },
         name: {
           type: GraphQLString
         },
@@ -195,21 +184,18 @@ const Mutation = new GraphQLObjectType({
         }
       },
       resolve(parent, args) {
-        const user = {
+        const user = new User({
           name: args.name,
           age: args.age,
           profession: args.profession
-        }
+        });
 
-        return user;
+        return user.save();
       }
     },
     createPost: {
       type: PostType,
       args: {
-        // id: {
-        //   type: GraphQLID
-        // }
         comment: {
           type: GraphQLString
         },
@@ -218,20 +204,17 @@ const Mutation = new GraphQLObjectType({
         }
       },
       resolve(parent, args) {
-        const post = {
+        const post = new Post({
           comment: args.comment,
           userId: args.userId
-        }
+        });
 
-        return post;
+        return post.save();
       }
     },
     createHobby: {
       type: HobbyType,
       args: {
-        // id: {
-        //   type: GraphQLID,
-        // }
         title: {
           type: GraphQLString
         },
@@ -243,13 +226,13 @@ const Mutation = new GraphQLObjectType({
         }
       },
       resolve(parent, args) {
-        const hobby = {
+        const hobby = new Hobby({
           title: args.title,
           description: args.description,
           userId: args.userId
-        }
+        });
 
-        return hobby;
+        return hobby.save();
       }
     }
   }
