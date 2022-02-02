@@ -210,6 +210,17 @@ const Mutation = new GraphQLObjectType({
         }, { new: true });
       }
     },
+    deleteUser: {
+      type: UserType,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLID)
+        }
+      },
+      resolve(parent, args) {
+        return User.findByIdAndRemove(args.id).exec();
+      }
+    },
     createPost: {
       type: PostType,
       args: {
@@ -245,6 +256,17 @@ const Mutation = new GraphQLObjectType({
             comment: args.comment,
           }
         }, { new: true });
+      }
+    },
+    deletePost: {
+      type: PostType,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLID)
+        }
+      },
+      resolve(parent, args) {
+        return Post.findByIdAndRemove(args.id).exec();
       }
     },
     createHobby: {
@@ -290,7 +312,18 @@ const Mutation = new GraphQLObjectType({
           description: args.description || hobby.description
         }, { new: true });
       }
-    }
+    },
+    deleteHobby: {
+      type: HobbyType,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLID)
+        }
+      },
+      resolve(parent, args) {
+        return Hobby.findByIdAndRemove(args.id).exec();
+      }
+    },
   }
 });
 
