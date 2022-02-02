@@ -10,29 +10,6 @@ import Hobby from '../../model/Hobby.js';
 import Post from '../../model/Post.js';
 import User from '../../model/user.js';
 
-// dummy data
-// const usersData = [
-//   { id: '1', name: 'Bond', age: 36, profession: 'Doctor' },
-//   { id: '2', name: 'Anna', age: 26, profession: 'Teacher' },
-//   { id: '3', name: 'Bella', age: 16, profession: 'Programmer' },
-//   { id: '4', name: 'Gina', age: 26, profession: 'Mechanic' },
-//   { id: '5', name: 'Georgina', age: 36, profession: 'Painter' }
-// ];
-// const hobbyData = [
-//   { id: '1', title: 'Programming', description: 'Some test description', userId: '1' },
-//   { id: '2', title: 'Rowing', description: 'Some test description', userId: '1' },
-//   { id: '3', title: 'Swimming', description: 'Some test description', userId: '2' },
-//   { id: '4', title: 'Fencing', description: 'Some test description', userId: '3' },
-//   { id: '5', title: 'Hiking', description: 'Some test description', userId: '4' }
-// ];
-// const postData = [
-//   { id: '1', comment: 'Some test comment', userId: '1' },
-//   { id: '2', comment: 'Some test comment', userId: '1' },
-//   { id: '3', comment: 'Some test comment', userId: '2' },
-//   { id: '4', comment: 'Some test comment', userId: '3' },
-//   { id: '5', comment: 'Some test comment', userId: '4' },
-// ];
-
 // specify each entity
 const UserType = new GraphQLObjectType({
   name: 'User',
@@ -57,11 +34,13 @@ const UserType = new GraphQLObjectType({
     posts: {
       type: new GraphQLList(PostType),
       resolve(parent, args) {
+        return Post.find({ userId: String(parent.id) });
       }
     },
     hobbies: {
       type: new GraphQLList(HobbyType),
       resolve(parent, args) {
+        return Hobby.find({ userId: String(parent.id) });
       }
     }
   }),
@@ -80,9 +59,12 @@ const HobbyType = new GraphQLObjectType({
     description: {
       type: GraphQLString
     },
+
+    // link two entities together
     user: {
       type: UserType,
       resolve(parent, args) {
+        return User.findById(parent.id);
       }
     }
   })
@@ -98,10 +80,10 @@ const PostType = new GraphQLObjectType({
     comment: {
       type: GraphQLString
     },
-    // link two entities together
     user: {
       type: UserType,
       resolve(parent, args) {
+        return User.findById(parent.id);
       }
     }
   })
@@ -124,11 +106,13 @@ const RootQuery = new GraphQLObjectType({
 
       // data return
       resolve(parent, args) {
+        return User.findById(args.id);
       }
     },
     users: {
       type: new GraphQLList(UserType),
       resolve(parent, args) {
+        return User.find();
       }
     },
     hobby: {
@@ -139,11 +123,13 @@ const RootQuery = new GraphQLObjectType({
         }
       },
       resolve(parent, args) {
+        return Hobby.findById(args.id);
       }
     },
     hobbies: {
       type: new GraphQLList(HobbyType),
       resolve(parent, args) {
+        return Hobby.find();
       }
     },
     post: {
@@ -154,11 +140,13 @@ const RootQuery = new GraphQLObjectType({
         },
       },
       resolve(parent, args) {
+        return Post.findById(args.id);
       }
     },
     posts: {
       type: new GraphQLList(PostType),
       resolve(parent, args) {
+        return Post.find();
       }
     }
   }
