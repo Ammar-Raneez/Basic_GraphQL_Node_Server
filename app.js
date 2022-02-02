@@ -1,5 +1,6 @@
 import express from 'express';
 import { graphqlHTTP } from 'express-graphql';
+import './utils/database.js';
 import schema from './server/schema/schema.js';
 
 const app = express();
@@ -9,7 +10,7 @@ app.use('/graphql', graphqlHTTP({
 }));
 
 app.listen(4000, () => {
-  console.log(`Listening on port 3000`);
+  console.log(`Listening on port 4000`);
 });
 
 app.get('/', (req, res) => {

@@ -112,7 +112,7 @@ const PostType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   description: '',
-  // how querying should be or specific entities
+  // how querying should be for specific entities
   fields: {
     user: {
       type: UserType,
