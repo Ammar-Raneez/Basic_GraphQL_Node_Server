@@ -5,6 +5,7 @@ import {
   GraphQLSchema,
   GraphQLString,
   GraphQLList,
+  GraphQLNonNull,
 } from 'graphql';
 import Hobby from '../../model/Hobby.js';
 import Post from '../../model/Post.js';
@@ -162,7 +163,7 @@ const Mutation = new GraphQLObjectType({
       type: UserType,
       args: {
         name: {
-          type: GraphQLString
+          type: new GraphQLNonNull(GraphQLString)
         },
         age: {
           type: GraphQLInt
@@ -185,10 +186,10 @@ const Mutation = new GraphQLObjectType({
       type: PostType,
       args: {
         comment: {
-          type: GraphQLString
+          type: new GraphQLNonNull(GraphQLString)
         },
         userId: {
-          type: GraphQLID
+          type: new GraphQLNonNull(GraphQLID)
         }
       },
       resolve(parent, args) {
@@ -204,13 +205,13 @@ const Mutation = new GraphQLObjectType({
       type: HobbyType,
       args: {
         title: {
-          type: GraphQLString
+          type: new GraphQLNonNull(GraphQLString)
         },
         description: {
           type: GraphQLString,
         },
         userId: {
-          type: GraphQLID
+          type: new GraphQLNonNull(GraphQLID)
         }
       },
       resolve(parent, args) {
