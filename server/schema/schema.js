@@ -92,7 +92,7 @@ const PostType = new GraphQLObjectType({
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
-  description: '',
+  description: 'Available Query',
   // how querying should be for specific entities
   fields: {
     user: {
@@ -157,6 +157,7 @@ const RootQuery = new GraphQLObjectType({
 // Mutations
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
+  description: 'Available Mutations',
   fields: {
     // will be a method
     createUser: {
