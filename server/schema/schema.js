@@ -182,6 +182,33 @@ const Mutation = new GraphQLObjectType({
         return user.save();
       }
     },
+    updateUser: {
+      type: UserType,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLID)
+        },
+        name: {
+          type: new GraphQLNonNull(GraphQLString)
+        },
+        age: {
+          type: GraphQLInt
+        },
+        profession: {
+          type: GraphQLString
+        }
+      },
+      async resolve(parent, args) {
+        const user = await User.findById(args.id);
+        return User.findByIdAndUpdate(args.id, {
+          $set: {
+            name: args.name,
+            age: user.age || args.age,
+            profession: user.profession || args.profession
+          }
+        }, { new: true });
+      }
+    },
     createPost: {
       type: PostType,
       args: {
@@ -199,6 +226,24 @@ const Mutation = new GraphQLObjectType({
         });
 
         return post.save();
+      }
+    },
+    updatePost: {
+      type: PostType,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLID)
+        },
+        comment: {
+          type: new GraphQLNonNull(GraphQLString)
+        }
+      },
+      resolve(parent, args) {
+        return Post.findByIdAndUpdate(args.id, {
+          $set: {
+            comment: args.comment,
+          }
+        }, { new: true });
       }
     },
     createHobby: {
@@ -222,6 +267,27 @@ const Mutation = new GraphQLObjectType({
         });
 
         return hobby.save();
+      }
+    },
+    updateHobby: {
+      type: HobbyType,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLID)
+        },
+        title: {
+          type: new GraphQLNonNull(GraphQLString)
+        },
+        description: {
+          type: GraphQLString
+        }
+      },
+      async resolve(parent, args) {
+        const hobby = await Hobby.findById(args.id);
+        return Hobby.findByIdAndUpdate(args.id, {
+          title: args.title,
+          description: args.description || hobby.description
+        }, { new: true });
       }
     }
   }
